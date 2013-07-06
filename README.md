@@ -1,4 +1,11 @@
-vms
-===
+WAS4P (em desenvolvimento)
+=====
+É uma VM (Virtual Machine) contendo uma instalação padrão para desenvolvimento 
+em PHP, entitulado de "Web Application Server for PHP", uma iniciativa da 
+Wend Tecnologia para divulgar e propagar as melhores práticas do mercado para
+PHP.
 
-Virtual Machine Scripts
+Author
+=====
+Walker de Alencar @walkeralencar
+
