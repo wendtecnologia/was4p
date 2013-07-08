@@ -4,9 +4,9 @@
 # Author: Walker de Alencar (@walkeralencar)
 ###
 
-echo "Copiando configurações"
+echo "Copiando configuracoes..."
 cp -f ../data/etc/network/interfaces /etc/network/interfaces
+echo "Ok"
 
-# Iniciando as interfaces
+echo "Iniciando as interfaces"
 ifup eth0
-ifup eth1

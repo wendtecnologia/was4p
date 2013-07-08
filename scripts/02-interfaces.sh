@@ -4,9 +4,10 @@
 # Author: Walker de Alencar (@walkeralencar)
 ###
 
-echo -e -n "Copiando configurações..."
+echo -e -n "Copiando configuracoes..."
 cp -f ../data/etc/network/interfaces /etc/network/interfaces
 echo "Ok"
 echo -e -n "Iniciando as interfaces..."
 ifup eth0
 echo "Ok"
+

@@ -7,4 +7,6 @@
 echo -e -n "Atualizando pacotes..."
 apt-get update
 apt-get upgrade -y
-echo "Atualização completa!"
+echo "Atualizacao completa!"
+
+
