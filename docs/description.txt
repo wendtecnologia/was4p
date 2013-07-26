@@ -1,0 +1,33 @@
+WAS4P
+=====
+# en-US:
+It is a VM (Virtual Machine) containing a standard installation for PHP development, titled "Web Application Server for PHP".
+
+# pt-BR:
+É uma VM (Virtual Machine) contendo uma instalação padrão para desenvolvimento em PHP, entitulado de "Web Application Server for PHP".
+
+## INFO
+User....: was4p
+password: was4p123
+
+## VERSIONS
+
+### Clean
+* Ubuntu Server 12.04.2 LTS (64bits)
+  * SSH Server
+
+### Minimal (Clean)
+* Zend Server 6.1 PHP 5.4
+* Git
+* PATH update
+
+### Default (Minimal)
+* PHPQaTools
+
+### Full (Default)
+* Jenkins
+* PHPTemplate
+
+### Credits
+Company: Wend Tecnologia (http://wend.com.br)
+Author: Walker de Alencar (@walkeralencar)

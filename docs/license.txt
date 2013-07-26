@@ -1,0 +1,3 @@
+LICENSE
+=======
+1. Ubuntu 12.04.2 Server (amd64) - http://www.ubuntu.com/project/about-ubuntu/licensing

@@ -18,5 +18,8 @@ que possua acesso à internet.
 ### 03-upgrade.sh
 Faz update e upgrade do SO.
 
+### 04-zendserver.sh
+Instalação do Zend Server com php 5.4
+
 ### 99-dependencies.sh
 Intala aplicações dependentes: git-core, git-svn, subversion, gcc, autoconf, make

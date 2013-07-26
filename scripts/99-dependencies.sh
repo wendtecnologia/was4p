@@ -4,8 +4,8 @@
 # Author: Walker de Alencar (@walkeralencar)
 ###
 
-echo "Copiando configuracoes..."
-cp -f ../data/etc/network/interfaces /etc/network/interfaces
+echo "Instalando Git..."
+apt-get install git-core git-svn subversion
 echo "Ok"
 
 echo "Iniciando as interfaces"
