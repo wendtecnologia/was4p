@@ -12,7 +12,7 @@ return 0
 }
 
 # on OEL, /etc/issue states "Enterprise Linux Enterprise Linux Server"
-SUPPORTED_OS='CentOS|Red Hat Enterprise Linux Server|Enterprise Linux Enterprise Linux Server|Fedora|SUSE|Debian GNU/Linux|Ubuntu|Oracle Linux Server'
+SUPPORTED_OS='CentOS|Red Hat Enterprise Linux Server|Enterprise Linux Enterprise Linux Server|SUSE|Debian GNU/Linux|Ubuntu|Oracle Linux Server'
 
 if ! egrep -q "$SUPPORTED_OS" /etc/issue ; then
 cat <<EOF
@@ -26,7 +26,7 @@ fi
 
 # -v or --version
 if [ "$1" = "-v" -o "$1" = "--version" ]; then
-	echo "`basename $0` version 6.1.0 (build: \$Revision: 72176 $)"
+	echo "`basename $0` version 6.1.0 (build: \$Revision: 72681 $)"
 	usage
 	exit 0
 fi
