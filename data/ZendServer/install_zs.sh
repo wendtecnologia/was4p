@@ -12,7 +12,7 @@ return 0
 }
 
 # on OEL, /etc/issue states "Enterprise Linux Enterprise Linux Server"
-SUPPORTED_OS='CentOS|Red Hat Enterprise Linux Server|Enterprise Linux Enterprise Linux Server|SUSE|Debian GNU/Linux|Ubuntu|Oracle Linux Server'
+SUPPORTED_OS='CentOS|Red Hat Enterprise Linux Server|Enterprise Linux Enterprise Linux Server|Fedora|Mint|SUSE|Debian GNU/Linux|Ubuntu|Oracle Linux Server'
 
 if ! egrep -q "$SUPPORTED_OS" /etc/issue ; then
 cat <<EOF
