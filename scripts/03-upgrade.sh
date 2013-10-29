@@ -4,9 +4,9 @@
 # Author: Walker de Alencar (@walkeralencar)
 ###
 
-echo -e -n "Atualizando pacotes..."
+echo -n "Atualizando pacotes..."
 apt-get update
 apt-get upgrade -y
-echo "Atualizacao completa!"
+echo "Atualizando pacotes... OK"
 
 
