@@ -21,5 +21,8 @@ Faz update e upgrade do SO.
 ### 04-zendserver.sh
 Instalação do Zend Server com php 5.4
 
+### 94-setpath.sh
+Ajusta o PATH para incluir o /bin do Zend Server, o /bin e o atalho 'zf' do Zend Framework 1
+
 ### 99-dependencies.sh
 Intala aplicações dependentes: git-core, git-svn, subversion, gcc, autoconf, make
