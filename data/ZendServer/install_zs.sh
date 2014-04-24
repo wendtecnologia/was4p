@@ -1,11 +1,13 @@
 #!/bin/sh
 
+ZS_VERSION=6.3
+
 usage()
 {
 cat <<EOF
 
 Usage: $0 <php_version> [nginx] [java] [--automatic]
-Where php_version is either 5.3 or 5.4.
+Where php_version is either 5.3, 5.4 or 5.5.
 
 EOF
 return 0
@@ -37,7 +39,7 @@ fi
 
 # -v or --version
 if [ "$1" = "-v" -o "$1" = "--version" ]; then
-	echo "`basename $0` version 6.1.0 (build: \$Revision: 77536 $)"
+	echo "`basename $0` version $ZS_VERSION (build: \$Revision: 80975 $)"
 	usage
 	exit 0
 fi
@@ -55,7 +57,7 @@ if [ $# -lt 1 ]; then
 fi
 
 # Verify parameter
-if [ "$1" != "5.3" -a "$1" != "5.4" ]; then
+if [ "$1" != "5.3" -a "$1" != "5.4" -a "$1" != "5.5" ]; then
 	usage
 	exit 2
 else
@@ -84,15 +86,6 @@ if [ ! -z "$MYUID" ]; then
 else
     echo "Could not detect UID";
     exit 2
-fi
-
-if echo $CURRENT_OS | egrep -q "Ubuntu 13.10"; then
-cat <<EOF
-
-Ubuntu 13.10 comes with Apache 2.4, which is currently not supported by Zend 
-Server. To install Zend Server on Ubuntu 13.10, you can either use our nginx 
-solution, or make sure Apache 2.2 is installed.
-EOF
 fi
 
 cat <<EOF
@@ -142,6 +135,21 @@ else
 	exit 2
 fi
 
+# Apache check for Ubuntu 13.10
+if echo $CURRENT_OS | grep -q "Ubuntu 13.10"; then
+	echo  -n "Tool to check current apache version: "
+	if which apache2ctl 2> /dev/null; then
+		if apache2ctl -v | grep version | grep -q 2.2; then
+			echo
+			echo "Currently, you have Apache 2.2 installed. For Ubuntu 13.10, Zend Server supports "
+			echo "Apache 2.4. Please upgrade your Apache to 2.4 and retry the installation/upgrade."
+			exit 2
+		fi
+	else
+		echo "none"
+	fi
+fi
+
 # Check if upgrade is allowed
 if [ "$UPGRADE" = "1" ]; then
 	if [ -f /etc/zce.rc ]; then
@@ -149,6 +157,7 @@ if [ "$UPGRADE" = "1" ]; then
 	fi
 
 	echo "Found existing installation of Zend Server ($PRODUCT_VERSION)"
+	echo
 
 	INSTALLED_PHP=`/usr/local/zend/bin/php -v | head -1 | cut -f2 -d" "`
 	INSTALLED_PHP_MAJOR=`echo $INSTALLED_PHP | cut -f1,2 -d"."`
@@ -168,6 +177,12 @@ if [ "$UPGRADE" = "1" ]; then
 	elif [ "$INSTALLED_PHP_MAJOR" = "5.4" -a "$PHP" = "5.3" ]; then
 		echo "Downgrade from PHP $INSTALLED_PHP_MAJOR to $PHP isn't supported."
 		exit 2
+	elif [ "$INSTALLED_PHP_MAJOR" = "5.5" -a "$PHP" = "5.4" ]; then
+		echo "Downgrade from PHP $INSTALLED_PHP_MAJOR to $PHP isn't supported."
+		exit 2
+	elif [ "$INSTALLED_PHP_MAJOR" = "5.5" -a "$PHP" = "5.3" ]; then
+		echo "Downgrade from PHP $INSTALLED_PHP_MAJOR to $PHP isn't supported."
+		exit 2
 	elif echo "$INSTALLED_PACKAGES" | grep -q nginx && [ -z "$NGINX" ]; then
 		echo "Zend Server with nginx cannot be upgraded to a different installation type of Zend Server."
 		echo "Please uninstall Zend Server and perform a clean installation."
@@ -175,6 +190,10 @@ if [ "$UPGRADE" = "1" ]; then
 	elif ! (echo "$INSTALLED_PACKAGES" | grep -q nginx) && [ -n "$NGINX" ]; then
 		echo "The Zend Server installation type you are currently using cannot be upgraded to Zend Server with nginx."
 		echo "Please uninstall Zend Server and perform a clean installation."
+		exit 2
+	elif echo $CURRENT_OS | egrep -q "Debian GNU/Linux|Ubuntu" && [ "$INSTALLED_PHP_MAJOR" = "5.2" -a "$PHP" = "5.5" ]; then
+		echo "The recommend method to upgrade from PHP $INSTALLED_PHP_MAJOR to PHP $PHP is a clean installation. If a clean installation is"
+		echo "not an option, you should first upgrade to Zend Server $ZS_VERSION with PHP 5.3, and only then upgrade to PHP $PHP."
 		exit 2
 	fi
 else
@@ -197,9 +216,12 @@ echo -n "Doing repository configuration for: "
 if which apt-get 2> /dev/null; then
 	if echo $CURRENT_OS | grep -q -E "Debian GNU/Linux 5|Debian GNU/Linux 6|Ubuntu 10"; then
 		REPO_FILE=`dirname $0`/zend.deb.repo
-	else
+	elif echo $CURRENT_OS | grep -q -E "Debian GNU/Linux 7|Ubuntu 12|Ubuntu 13.04"; then
 		# This is the default for Debian >> 6 and Ubuntu >> 10.04
 		REPO_FILE=`dirname $0`/zend.deb_ssl1.0.repo
+	else
+		# This is the default for Debian >> 7 and Ubuntu >> 13.04
+		REPO_FILE=`dirname $0`/zend.deb_apache2.4.repo
 	fi
 
 	TARGET_REPO_FILE=/etc/apt/sources.list.d/zend.list
@@ -270,12 +292,12 @@ if [ "$UPGRADE" = "0" ]; then
 	if which aptitude 2> /dev/null; then
 		aptitude $AUTOMATIC install $WHAT_TO_INSTALL
 		RC=$?
-		dpkg-query -W -f='${Package} ${Version}\n' $WHAT_TO_INSTALL 2> /dev/null
+		dpkg-query -W -f='${Status}\n' $WHAT_TO_INSTALL | grep -q ' installed'
 		VERIFY_RC=$?
 	elif which apt-get 2> /dev/null; then
 		apt-get $AUTOMATIC install $WHAT_TO_INSTALL
 		RC=$?
-		dpkg-query -W -f='${Package} ${Version}\n' $WHAT_TO_INSTALL 2> /dev/null
+		dpkg-query -W -f='${Status}\n' $WHAT_TO_INSTALL | grep -q ' installed'
 		VERIFY_RC=$?
 	elif which yum 2> /dev/null; then
 		yum $AUTOMATIC install $WHAT_TO_INSTALL
@@ -307,6 +329,11 @@ if [ "$UPGRADE" = "1" ]; then
 		mkdir $ZCE_PREFIX/etc-$BACKUP_SUFFIX
 	fi
 
+	# Remove possible leftovers from previous upgrade (ZSRV-12019)
+	if [ -f $ZCE_PREFIX/etc/php.ini.rpmsave ]; then
+		mv -f $ZCE_PREFIX/etc/php.ini.rpmsave $ZCE_PREFIX/etc/php.ini.rpmsave.old
+	fi
+
 	cp -rp $ZCE_PREFIX/etc/* $ZCE_PREFIX/etc-$BACKUP_SUFFIX/
 
 	if [ ! -d $ZCE_PREFIX/lighttpd-etc-$BACKUP_SUFFIX ]; then
@@ -316,7 +343,7 @@ if [ "$UPGRADE" = "1" ]; then
 	cp -rp $ZCE_PREFIX/gui/lighttpd/etc/* $ZCE_PREFIX/lighttpd-etc-$BACKUP_SUFFIX/
 
 	# Workaround an upgrade bug in our 6.1.0 Debian packages (ZSRV-11344)
-	if [ "$BACKUP_SUFFIX" = "6.1.0" ]; then
+	if [ "$BACKUP_SUFFIX" = "6.1.0" -o "$BACKUP_SUFFIX" = "6.2.0" ]; then
 		if which dpkg 2> /dev/null; then
 			mkdir -p $ZCE_PREFIX/etc-$BACKUP_SUFFIX-workaround
 			cp -rp $ZCE_PREFIX/etc/* $ZCE_PREFIX/etc-$BACKUP_SUFFIX-workaround
@@ -329,12 +356,12 @@ if [ "$UPGRADE" = "1" ]; then
 		if which aptitude 2> /dev/null; then
 			aptitude $AUTOMATIC install '~izend'
 			RC=$?
-			dpkg-query -W -f='${Package} ${Version}\n' $WHAT_TO_INSTALL 2> /dev/null
+			dpkg-query -W -f='${Status}\n' $WHAT_TO_INSTALL | grep -q ' installed'
 			VERIFY_RC=$?
 		elif which apt-get 2> /dev/null; then
 			apt-get $AUTOMATIC install $WHAT_TO_INSTALL
 			RC=$?
-			dpkg-query -W -f='${Package} ${Version}\n' $WHAT_TO_INSTALL 2> /dev/null
+			dpkg-query -W -f='${Status}\n' $WHAT_TO_INSTALL | grep -q ' installed'
 			VERIFY_RC=$?
 			apt-get $AUTOMATIC install `dpkg -l '*zend*' | grep ^ii | awk '{print $2}'`
 		elif which yum 2> /dev/null; then
@@ -367,6 +394,10 @@ if [ "$UPGRADE" = "1" ]; then
 		done
 
 		if which apt-get 2> /dev/null; then
+			if ! echo $CURRENT_OS | grep -q -E "Debian GNU/Linux 5|Debian GNU/Linux 6|Ubuntu 10|Ubuntu 12.04"; then
+				# Remove the zend-server package when apt-get version newer than 0.8
+				apt-get $AUTOMATIC remove `echo $WHAT_TO_INSTALL | sed "s/$PHP/$INSTALLED_PHP_MAJOR/g"`
+			fi
 			apt-get $AUTOMATIC install $WHAT_TO_INSTALL $WHAT_TO_INSTALL_EXTRA
 			RC=$?
 			if [ $RC -eq 0 ]; then

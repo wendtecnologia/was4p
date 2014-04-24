@@ -1,0 +1,35 @@
+2013-12-02 00:16:14 -0200 
+ [UPDATE] - organização dos scripts e ajustes para melhor uso de variaveis
+2013-10-29 18:06:29 -0200 
+ [UPDATE] - removido os links dinâmicos, closes #9 [INFO] - na correcao do fedora e mint, fixed #11
+2013-10-29 17:47:35 -0200 
+ [UPDATE] - ajustes no script de instalação do Zend Server - documentação no README [ADD] - Implementado definições de PATH, closes #8 - criação do alias do ZF1, closes #10
+2013-10-29 17:44:43 -0200 
+ [UPDATE] - ajustes nos textos dos scripts
+2013-10-29 16:51:00 -0200 
+ [FIX] - Adicionado Mint e o Fedora na lista de suportados, (fixed #1)
+2013-10-21 18:14:35 -0200 
+ [UPDATE] - gitignore
+2013-10-21 18:09:21 -0200 
+ [update] - Atualização de revisao do script do Zend Server e das permissoes do nginx
+2013-07-26 05:52:38 -0300 
+ [ADD] - Scripts para instalação de dependencias - Ajustes no README.md - Inclusão de documentação.
+2013-07-20 22:19:37 -0300 
+ Update README.md
+2013-07-20 15:01:47 -0700 
+ Merge pull request #6 from renanbr/master
+2013-07-20 16:55:29 -0300 
+ PHPQaTools, relacionado ao #1
+2013-07-19 13:02:44 -0300 
+ Update README.md
+2013-07-07 23:18:56 -0300 
+ [FIXED] - resolvido problemas de conflito formato dos arquivos .sh
+2013-07-06 15:38:48 -0300 
+ [UPDATE] - chmod adjusts
+2013-07-06 15:36:25 -0300 
+ [UPDATE] - adjust chmod
+2013-07-06 15:29:21 -0300 
+ [ADD] - Scripts para atualização e upgrade do ubuntu. - Scripts para instalação do ZendServer 6.1 com PHP 5.4 - Scripts para instalação de dependencias
+2013-04-08 06:58:22 -0700 
+ Initial commit
+

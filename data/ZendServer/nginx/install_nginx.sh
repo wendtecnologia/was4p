@@ -60,8 +60,7 @@ elif echo $CURRENT_OS | grep -q "Ubuntu 13.04"; then
 	TYPE=deb
 elif echo $CURRENT_OS | grep -q "Ubuntu 13.10"; then
 	OS=ubuntu
-	# A hack to use Ubuntu 13.04 till nginx.org will support Ubuntu 13.10
-	OSRELEASE=raring
+	OSRELEASE=saucy
 	TYPE=deb
 else
 	echo "Based on either lsb_release or /etc/issue your OS version is not supported by nginx.org"
