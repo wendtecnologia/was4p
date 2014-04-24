@@ -64,10 +64,12 @@ DEB repositories:
 * Debian GNU/Linux 6 and up
 * Ubuntu Linux 10.04 (LTS), 12.04 (LTS) and up
 
+Note: Ubuntu 13.10 is supported only with Apache 2.2 and Nginx web servers, 
+not Apache 2.4
+
 RPM repositories:
 * Red Hat Enterprise Linux 5 and up
 * CentOS 5 and up
-* Fedora 16 and up
 * Oracle Enterprise Linux 5 and up
 * SLES 11
 * OpenSUSE 12.x

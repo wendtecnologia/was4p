@@ -4,55 +4,67 @@ echo "This script will define the nginx.org repository on your system"
 echo "See support matrix at http://nginx.org/en/linux_packages.html#distributions"
 echo
 
-if [ ! -f /etc/issue ]; then
-	echo "/etc/issue not found, cannot identify your OS version"
-	exit 2
-elif grep -q "CentOS release 5" /etc/issue; then
+if `which lsb_release > /dev/null 2>&1`; then
+	CURRENT_OS=`lsb_release -d -s`
+elif [ -f /etc/issue ]; then
+	CURRENT_OS=`head -1 /etc/issue`
+else
+	echo "Can't identify your system using lsb_release or /etc/issue in order to"
+	echo "configure nginx.org repository."
+	exit 1
+fi
+	
+if echo $CURRENT_OS | grep -q "CentOS release 5"; then
 	OS=centos
 	OSRELEASE=5
 	TYPE=rpm
-elif grep -q "CentOS release 6" /etc/issue; then
+elif echo $CURRENT_OS | grep -q "CentOS release 6"; then
 	OS=centos
 	OSRELEASE=6
 	TYPE=rpm
-elif grep -q "Red Hat Enterprise Linux Server release 5" /etc/issue; then
+elif echo $CURRENT_OS | grep -q "Red Hat Enterprise Linux Server release 5"; then
 	OS=rhel
 	OSRELEASE=5
 	TYPE=rpm
-elif grep -q "Red Hat Enterprise Linux Server release 6" /etc/issue; then
+elif echo $CURRENT_OS | grep -q "Red Hat Enterprise Linux Server release 6"; then
 	OS=rhel
 	OSRELEASE=6
 	TYPE=rpm
-elif grep -q "Debian GNU/Linux 6" /etc/issue; then
+elif echo $CURRENT_OS | grep -q "Debian GNU/Linux 6"; then
 	OS=debian
 	OSRELEASE=squeeze
 	TYPE=deb
-elif grep -q "Debian GNU/Linux 7" /etc/issue; then
+elif echo $CURRENT_OS | grep -q "Debian GNU/Linux 7"; then
 	OS=debian
 	OSRELEASE=wheezy
 	TYPE=deb
-elif grep -q "Ubuntu 10.04" /etc/issue; then
+elif echo $CURRENT_OS | grep -q "Ubuntu 10.04"; then
 	OS=ubuntu
 	OSRELEASE=lucid
 	TYPE=deb
-elif grep -q "Ubuntu 11.10" /etc/issue; then
+elif echo $CURRENT_OS | grep -q "Ubuntu 11.10"; then
 	OS=ubuntu
 	OSRELEASE=oneiric
 	TYPE=deb
-elif grep -q "Ubuntu 12.04" /etc/issue; then
+elif echo $CURRENT_OS | grep -q "Ubuntu 12.04"; then
 	OS=ubuntu
 	OSRELEASE=precise
 	TYPE=deb
-elif grep -q "Ubuntu 12.10" /etc/issue; then
+elif echo $CURRENT_OS | grep -q "Ubuntu 12.10"; then
 	OS=ubuntu
 	OSRELEASE=quantal
 	TYPE=deb
-elif grep -q "Ubuntu 13.04" /etc/issue; then
+elif echo $CURRENT_OS | grep -q "Ubuntu 13.04"; then
 	OS=ubuntu
 	OSRELEASE=raring
 	TYPE=deb
+elif echo $CURRENT_OS | grep -q "Ubuntu 13.10"; then
+	OS=ubuntu
+	# A hack to use Ubuntu 13.04 till nginx.org will support Ubuntu 13.10
+	OSRELEASE=raring
+	TYPE=deb
 else
-	echo "Cannot identify your OS version or your OS version is not supported by nginx.org"
+	echo "Based on either lsb_release or /etc/issue your OS version is not supported by nginx.org"
 	exit 2
 fi
 
