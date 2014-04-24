@@ -19,7 +19,7 @@ que possua acesso à internet.
 Faz update e upgrade do SO.
 
 ### 04-zendserver.sh
-Instalação do Zend Server com php 5.4
+Instalação do Zend Server com php 5.5
 
 ### 94-setpath.sh
 Ajusta o PATH para incluir o /bin do Zend Server, o /bin e o atalho 'zf' do Zend Framework 1
