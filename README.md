@@ -6,7 +6,7 @@ Wend Tecnologia para divulgar e propagar as melhores práticas do mercado para
 PHP.
 
 ## Versões
-* **Minimal**: ZendServer + Git (was4p v1.1.0-dg (32bits)-minimal.ova)
+* **Minimal**: ZendServer + Git [was4p v1.1.0-dg (32bits)-minimal.ova]
 * **Default**: ZendServer + Git + PHPQaTools
 * **Full**: ZendServer + Git + PHPQaTools + Jenkins + PHPTemplate
 
