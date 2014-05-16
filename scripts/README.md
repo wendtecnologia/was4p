@@ -21,6 +21,12 @@ Faz update e upgrade do SO.
 ### 04-zendserver.sh
 Instalação do Zend Server com php 5.5
 
+### 05-qatools.sh
+Instala o composer no contexto global, e instala o PHP QA Tools baseado no composer e ajusta o PATH para incluir o /bin do Composer;
+
+### 06-jenkins.sh
+Instala o jenkins e os plugins necessários para sua utilização
+
 ### 94-setpath.sh
 Ajusta o PATH para incluir o /bin do Zend Server, o /bin e o atalho 'zf' do Zend Framework 1
 
