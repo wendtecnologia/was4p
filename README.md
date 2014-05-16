@@ -5,15 +5,15 @@ em PHP, entitulado de "Web Application Server for PHP", uma iniciativa da
 Wend Tecnologia para divulgar e propagar as melhores práticas do mercado para
 PHP.
 
-## Versões (ainda não disponbilizadas)
-* **Minimal**: ZendServer + Git
+## Versões
+* **Minimal**: ZendServer + Git (was4p v1.1.0-dg (32bits)-minimal.ova)
 * **Default**: ZendServer + Git + PHPQaTools
 * **Full**: ZendServer + Git + PHPQaTools + Jenkins + PHPTemplate
 
 ## Onde baixar?
-
 A máquina pronta pode ser encontrada no link:
 http://sourceforge.net/projects/was4p
+
 
 ## Author
 
