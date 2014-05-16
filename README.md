@@ -1,4 +1,4 @@
-# WAS4P (em desenvolvimento)
+# WAS4P
 
 É uma VM (Virtual Machine) contendo uma instalação padrão para desenvolvimento 
 em PHP, entitulado de "Web Application Server for PHP", uma iniciativa da 
