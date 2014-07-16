@@ -1,20 +1,20 @@
 #!/bin/sh
 
-ZS_VERSION=6.3
+ZS_VERSION=7.0
 
 usage()
 {
 cat <<EOF
 
-Usage: $0 <php_version> [nginx] [java] [--automatic]
-Where php_version is either 5.3, 5.4 or 5.5.
+Usage: $0 <php_version> [nginx] [java] [--automatic] [--repository <url>]
+Where php_version is either 5.4 or 5.5.
 
 EOF
 return 0
 }
 
 # on OEL, /etc/issue states "Enterprise Linux Enterprise Linux Server"
-SUPPORTED_OS='CentOS|Red Hat Enterprise Linux Server|Enterprise Linux Enterprise Linux Server|Mint|SUSE|Debian GNU/Linux|Ubuntu|Oracle Linux Server'
+SUPPORTED_OS='CentOS|Red Hat Enterprise Linux Server|Enterprise Linux Enterprise Linux Server|SUSE|Debian GNU/Linux|Ubuntu|Oracle Linux Server'
 
 
 if `which lsb_release > /dev/null 2>&1`; then
@@ -39,7 +39,7 @@ fi
 
 # -v or --version
 if [ "$1" = "-v" -o "$1" = "--version" ]; then
-	echo "`basename $0` version $ZS_VERSION (build: \$Revision: 80975 $)"
+	echo "`basename $0` version $ZS_VERSION (build: \$Revision: 86889 $)"
 	usage
 	exit 0
 fi
@@ -57,7 +57,7 @@ if [ $# -lt 1 ]; then
 fi
 
 # Verify parameter
-if [ "$1" != "5.3" -a "$1" != "5.4" -a "$1" != "5.5" ]; then
+if [ "$1" != "5.4" -a "$1" != "5.5" ]; then
 	usage
 	exit 2
 else
@@ -97,6 +97,7 @@ Running this script will perform the following:
 EOF
 
 if [ "$2" = "--automatic" ]; then
+	shift
 	if which zypper > /dev/null 2>&1; then
 		AUTOMATIC="-n --gpg-auto-import-keys"
 	else
@@ -211,17 +212,37 @@ if [ "$NGINX" = "nginx" ]; then
 	fi
 fi
 
+if [ "$2" = "--repository" ]; then
+	if [ -z "$3" ]; then
+		echo
+		echo "The --repository option requires a URL to install from (HTTP or FTP)."
+		exit 2
+	else
+		REPOSITORY="$3"
+		shift
+		shift
+		echo
+		echo "Using $REPOSITORY as the installation source."
+		echo
+	fi
+else
+	REPOSITORY=""
+fi
+
 # Set repository 
 echo -n "Doing repository configuration for: "
 if which apt-get 2> /dev/null; then
 	if echo $CURRENT_OS | grep -q -E "Debian GNU/Linux 5|Debian GNU/Linux 6|Ubuntu 10"; then
 		REPO_FILE=`dirname $0`/zend.deb.repo
+		REPOSITORY_CONTENT="deb $REPOSITORY/deb server non-free"
 	elif echo $CURRENT_OS | grep -q -E "Debian GNU/Linux 7|Ubuntu 12|Ubuntu 13.04"; then
 		# This is the default for Debian >> 6 and Ubuntu >> 10.04
 		REPO_FILE=`dirname $0`/zend.deb_ssl1.0.repo
+		REPOSITORY_CONTENT="deb $REPOSITORY/deb_ssl1.0 server non-free"
 	else
 		# This is the default for Debian >> 7 and Ubuntu >> 13.04
 		REPO_FILE=`dirname $0`/zend.deb_apache2.4.repo
+		REPOSITORY_CONTENT="deb $REPOSITORY/deb_apache2.4 server non-free"
 	fi
 
 	TARGET_REPO_FILE=/etc/apt/sources.list.d/zend.list
@@ -231,6 +252,25 @@ elif which yum 2> /dev/null; then
 	if [ -d /etc/yum/repos.d ]; then
 		# OpenSUSE
 		REPO_FILE=`dirname $0`/zend.rpm.suse.repo
+		read -r -d '' REPOSITORY_CONTENT <<-'EOF'
+			[Zend]
+			name=Zend Server
+			baseurl=$REPOSITORY/sles/\$basearch
+			type=rpm-md
+			enabled=1
+			autorefresh=1
+			gpgcheck=1
+			gpgkey=http://repos.zend.com/zend.key
+
+			[Zend_noarch]
+			name=Zend Server - noarch
+			baseurl=$REPOSITORY/sles/noarch
+			type=rpm-md
+			enabled=1
+			autorefresh=1
+			gpgcheck=1
+			gpgkey=http://repos.zend.com/zend.key
+		EOF
 		TARGET_REPO_FILE=/etc/yum/repos.d/zend.repo
 
 		# Change arch in the repo file 
@@ -243,6 +283,21 @@ elif which yum 2> /dev/null; then
 	else
 		# Fedora / RHEL / Centos
 		REPO_FILE=`dirname $0`/zend.rpm.repo
+		read -r -d '' REPOSITORY_CONTENT <<-'EOF'
+			[Zend]
+			name=Zend Server
+			baseurl=$REPOSITORY/rpm/\$basearch
+			enabled=1
+			gpgcheck=1
+			gpgkey=http://repos.zend.com/zend.key
+
+			[Zend_noarch]
+			name=Zend Server - noarch
+			baseurl=$REPOSITORY/rpm/noarch
+			enabled=1
+			gpgcheck=1
+			gpgkey=http://repos.zend.com/zend.key
+		EOF
 		TARGET_REPO_FILE=/etc/yum.repos.d/zend.repo
 	fi
 	if [ "$UPGRADE" = "1" ]; then
@@ -250,6 +305,25 @@ elif which yum 2> /dev/null; then
 	fi
 elif which zypper 2> /dev/null; then
 	REPO_FILE=`dirname $0`/zend.rpm.suse.repo
+	read -r -d '' REPOSITORY_CONTENT <<-'EOF'
+		[Zend]
+		name=Zend Server
+		baseurl=$REPOSITORY/sles/\$basearch
+		type=rpm-md
+		enabled=1
+		autorefresh=1
+		gpgcheck=1
+		gpgkey=http://repos.zend.com/zend.key
+
+		[Zend_noarch]
+		name=Zend Server - noarch
+		baseurl=$REPOSITORY/sles/noarch
+		type=rpm-md
+		enabled=1
+		autorefresh=1
+		gpgcheck=1
+		gpgkey=http://repos.zend.com/zend.key
+	EOF
 	TARGET_REPO_FILE=/etc/zypp/repos.d/zend.repo
 	if [ "$UPGRADE" = "1" ]; then
 		SYNC_COMM="zypper clean -a"
@@ -270,8 +344,15 @@ else
 	exit 2
 fi
 
-cp $REPO_FILE $TARGET_REPO_FILE
-if [ $? != 0 ]; then
+if [ -n "$REPOSITORY" ]; then
+	echo "$REPOSITORY_CONTENT" > $TARGET_REPO_FILE
+	REPOSITORY_RC=$?
+else
+	cp $REPO_FILE $TARGET_REPO_FILE
+	REPOSITORY_RC=$?
+fi
+
+if [ $REPOSITORY_RC != 0 ]; then
 	echo
 	echo "***************************************************************************************"
 	echo "* Zend Server Installation was not completed. Can't setup package manager repository. *" 
@@ -370,7 +451,7 @@ if [ "$UPGRADE" = "1" ]; then
 			rpm -q --qf "%{name} %{version}\n" $WHAT_TO_INSTALL 2> /dev/null
 			VERIFY_RC=$?
 		elif which zypper 2> /dev/null; then
-			zypper $AUTOMATIC update '*zend*'
+			zypper $AUTOMATIC update -r Zend -r Zend_noarch
 			RC=$?
 			rpm -q --qf "%{name} %{version}\n" $WHAT_TO_INSTALL 2> /dev/null
 			VERIFY_RC=$?
@@ -426,6 +507,24 @@ if [ "$UPGRADE" = "1" ]; then
 fi
 
 if [ $RC -eq 0 -a $VERIFY_RC -eq 0 ]; then
+	# Restart ZendServer on RHEL and friends when SELinux is enabled
+	SELINUX_SUPPORTED_OS='CentOS|Red Hat Enterprise Linux Server|Enterprise Linux Enterprise Linux Server|Oracle Linux Server'
+
+	if echo $CURRENT_OS | egrep -q "$SELINUX_SUPPORTED_OS"; then
+		if which getenforce > /dev/null 2> /dev/null && [ `getenforce` != "Disabled" ]; then
+			echo
+			echo "SELinux detcted, restarting ZendServer to apply SELinux settings."
+			echo "See http://files.zend.com/help/Zend-Server/zend-server.htm#selinux.htm for more information"
+
+			if [ "$UPGRADE" = "1" -a "$PRODUCT_VERSION" = "5.6.0" ]; then
+				# Cluster upgrade on 5.6 takes longer, wait with the restart
+				sleep 60;
+			fi
+
+			/usr/local/zend/bin/zendctl.sh restart
+		fi
+	fi
+
 	echo
 	echo "***********************************************************"
 	echo "* Zend Server was successfully installed. 		*"

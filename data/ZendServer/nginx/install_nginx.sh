@@ -62,6 +62,10 @@ elif echo $CURRENT_OS | grep -q "Ubuntu 13.10"; then
 	OS=ubuntu
 	OSRELEASE=saucy
 	TYPE=deb
+elif echo $CURRENT_OS | grep -q "Ubuntu 14.04"; then
+	OS=ubuntu
+	OSRELEASE=trusty
+	TYPE=deb
 else
 	echo "Based on either lsb_release or /etc/issue your OS version is not supported by nginx.org"
 	exit 2
