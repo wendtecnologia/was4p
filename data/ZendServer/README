@@ -61,16 +61,18 @@ Installing Zend Server through DEB or RPM repositories is supported on the
 following distributions:
 
 DEB repositories:
-* Debian GNU/Linux 6 and up
-* Ubuntu Linux 10.04 (LTS), 12.04 (LTS) and up
-
-Note: Ubuntu 13.10 is supported only with Apache 2.2 and Nginx web servers, 
-not Apache 2.4
+* Debian GNU/Linux 6
+* Debian GNU/Linux 7
+* Ubuntu Linux 12.04 (LTS)
+* Ubuntu Linux 14.04 (LTS) with Apache 2.4.
 
 RPM repositories:
-* Red Hat Enterprise Linux 5 and up
-* CentOS 5 and up
-* Oracle Enterprise Linux 5 and up
+* Red Hat Enterprise Linux 5
+* Red Hat Enterprise Linux 6
+* CentOS 5
+* CentOS 6
+* Oracle Enterprise Linux 5
+* Oracle Enterprise Linux 6
 * SLES 11
 * OpenSUSE 12.x
 

@@ -17,7 +17,7 @@
 
 #### Configurações
 - Ubuntu Server 14.04 LTS 32bits¹
-- Zend Server 6.3
+- Zend Server 7.0
 - PHP 5.5.7
 
 > ¹Disponibilizamos as VMs em 32bits para facilitar a utilização por qualquer pessoa, mesmo que ainda nao possuam um sistema 64bits.
