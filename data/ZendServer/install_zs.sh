@@ -14,7 +14,7 @@ return 0
 }
 
 # on OEL, /etc/issue states "Enterprise Linux Enterprise Linux Server"
-SUPPORTED_OS='CentOS|Red Hat Enterprise Linux Server|Enterprise Linux Enterprise Linux Server|SUSE|Debian GNU/Linux|Ubuntu|Oracle Linux Server'
+SUPPORTED_OS='CentOS|Red Hat Enterprise Linux Server|Enterprise Linux Enterprise Linux Server|Fedora|Mint|SUSE|Debian GNU/Linux|Ubuntu|Oracle Linux Server'
 
 
 if `which lsb_release > /dev/null 2>&1`; then

@@ -9,6 +9,5 @@
 root_path=`dirname $0`
 
 cd $root_path/scripts
-./03-upgrade.sh
 ./04-zendserver.sh
-
+./94-setpath.sh
